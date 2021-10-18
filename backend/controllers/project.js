@@ -2,6 +2,7 @@
 const { off } = require('../app');
 var Project = require('../models/project');
 var fs = require('fs');
+var path = require('path');
 var controller = {
 
     home: function(req, res){
@@ -94,7 +95,7 @@ var controller = {
 
             if(!projectDelete) return res.status(404).send({message:"No se ha podido elminar el proyecto"});
 
-            return res.status(200).send({message:"Project eliminado!"});
+            return res.status(200).send({project:projectDelete,message:"Project eliminado!"});
         });
     },
 
@@ -134,9 +135,23 @@ var controller = {
             return res.status(200).send({message: filename});
         }
 
+    },
+
+    getImageFile: function(req, res){
+        var file = req.params.image;
+        console.log(req.params);
+        var path_file = './uploads/'+ file;
+
+        fs.exists(path_file, function(exist){
+            if(exist){
+                return res.sendFile(path.resolve(path_file));
+            }else{
+                return res.status(200).send({
+                    message:'No exise la ruta'
+                });
+            }
+        });
     }
-
-
 }
 
 module.exports = controller;
